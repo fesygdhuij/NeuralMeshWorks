@@ -1,21 +1,45 @@
-function canPartitionKSubsets(nums, k) {
-  const sum = nums.reduce((acc, val) => acc + val, 0);
-  if (sum % k !== 0) return false;
-  const target = sum / k;
-  nums.sort((a, b) => b - a);
-  if (nums[0] > target) return false;
-  const visited = new Array(nums.length).fill(false);
-  return backtrack(0, 0, k);
-  function backtrack(start, currentSum, groups) {
-    if (groups === 1) return true;
-    if (currentSum === target) return backtrack(0, 0, groups - 1);
-    for (let i = start; i < nums.length; i++) {
-      if (!visited[i] && currentSum + nums[i] <= target) {
-        visited[i] = true;
-        if (backtrack(i + 1, currentSum + nums[i], groups)) return true;
-        visited[i] = false;
+function trapRainWater(heightMap) {
+  if (heightMap.length === 0) return 0;
+  const rows = heightMap.length;
+  const cols = heightMap[0].length;
+  const visited = Array.from(Array(rows), () => Array(cols).fill(false));
+  const heap = new MinHeap();
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1) {
+        heap.insert([heightMap[i][j], i, j]);
+        visited[i][j] = true;
       }
     }
-    return false;
   }
+  const dirs = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ];
+  let waterTrapped = 0;
+  while (heap.size() > 0) {
+    const [height, row, col] = heap.pop();
+    for (const dir of dirs) {
+      const newRow = row + dir[0];
+      const newCol = col + dir[1];
+      if (
+        newRow >= 0 &&
+        newRow < rows &&
+        newCol >= 0 &&
+        newCol < cols &&
+        !visited[newRow][newCol]
+      ) {
+        visited[newRow][newCol] = true;
+        waterTrapped += Math.max(0, height - heightMap[newRow][newCol]);
+        heap.insert([
+          Math.max(height, heightMap[newRow][newCol]),
+          newRow,
+          newCol,
+        ]);
+      }
+    }
+  }
+  return waterTrapped;
 }
