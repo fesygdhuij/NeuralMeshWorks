@@ -1,12 +1,13 @@
-function isValidParentheses(s) {
-  const stack = [];
-  const map = { "(": ")", "[": "]", "{": "}" };
-  for (const char of s) {
-    if (char in map) stack.push(char);
-    else {
-      const top = stack.pop();
-      if (map[top] !== char) return false;
+function maxSlidingWindow(nums, k) {
+  const result = [];
+  const queue = [];
+  for (let i = 0; i < nums.length; i++) {
+    while (queue.length && nums[i] >= nums[queue[queue.length - 1]]) {
+      queue.pop();
     }
+    queue.push(i);
+    if (queue[0] === i - k) queue.shift();
+    if (i >= k - 1) result.push(nums[queue[0]]);
   }
-  return stack.length === 0;
+  return result;
 }
