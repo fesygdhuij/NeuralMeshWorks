@@ -1,13 +1,26 @@
-function maxSlidingWindow(nums, k) {
-  const result = [];
-  const queue = [];
-  for (let i = 0; i < nums.length; i++) {
-    while (queue.length && nums[i] >= nums[queue[queue.length - 1]]) {
-      queue.pop();
+function isValidSudoku(board) {
+  for (let i = 0; i < 9; i++) {
+    const row = new Set();
+    const col = new Set();
+    const box = new Set();
+    for (let j = 0; j < 9; j++) {
+      const rowVal = board[i][j];
+      const colVal = board[j][i];
+      const boxVal =
+        board[3 * Math.floor(i / 3) + Math.floor(j / 3)][3 * (i % 3) + (j % 3)];
+      if (rowVal !== ".") {
+        if (row.has(rowVal)) return false;
+        row.add(rowVal);
+      }
+      if (colVal !== ".") {
+        if (col.has(colVal)) return false;
+        col.add(colVal);
+      }
+      if (boxVal !== ".") {
+        if (box.has(boxVal)) return false;
+        box.add(boxVal);
+      }
     }
-    queue.push(i);
-    if (queue[0] === i - k) queue.shift();
-    if (i >= k - 1) result.push(nums[queue[0]]);
   }
-  return result;
+  return true;
 }
