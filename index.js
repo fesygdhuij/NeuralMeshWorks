@@ -1,26 +1,16 @@
-function isValidSudoku(board) {
-  for (let i = 0; i < 9; i++) {
-    const row = new Set();
-    const col = new Set();
-    const box = new Set();
-    for (let j = 0; j < 9; j++) {
-      const rowVal = board[i][j];
-      const colVal = board[j][i];
-      const boxVal =
-        board[3 * Math.floor(i / 3) + Math.floor(j / 3)][3 * (i % 3) + (j % 3)];
-      if (rowVal !== ".") {
-        if (row.has(rowVal)) return false;
-        row.add(rowVal);
-      }
-      if (colVal !== ".") {
-        if (col.has(colVal)) return false;
-        col.add(colVal);
-      }
-      if (boxVal !== ".") {
-        if (box.has(boxVal)) return false;
-        box.add(boxVal);
+function maximalSquare(matrix) {
+  if (matrix.length === 0) return 0;
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  const dp = Array.from(Array(rows + 1), () => Array(cols + 1).fill(0));
+  let maxSide = 0;
+  for (let i = 1; i <= rows; i++) {
+    for (let j = 1; j <= cols; j++) {
+      if (matrix[i - 1][j - 1] === "1") {
+        dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+        maxSide = Math.max(maxSide, dp[i][j]);
       }
     }
   }
-  return true;
+  return maxSide * maxSide;
 }
